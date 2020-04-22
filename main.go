@@ -12,8 +12,8 @@ import (
 
 // Define the dimentions of the pieces
 const (
-	pieceWidth  = 10
-	pieceHeight = 10
+	pieceWidth  = 50
+	pieceHeight = 50
 )
 
 type piece struct {
@@ -23,7 +23,7 @@ type piece struct {
 
 func main() {
 	// Load the source image
-	src, _ := imaging.Open("images/monkey.jpg")
+	src, _ := imaging.Open("images/cover4.jpg")
 
 	// Determine new dimentions to be a multiple of the respective piece dimentions
 	// Integer division helps here
@@ -45,11 +45,11 @@ func main() {
 
 	// Populate the pieces slice
 	for j := 0; j < numPiecesY; j++ {
-		originy = j * pieceHeight //+ 1
+		originy = j * pieceHeight
 
 		var row []piece
 		for i := 0; i < numPiecesX; i++ {
-			originx = i * pieceWidth //+ 1
+			originx = i * pieceWidth
 			p := piece{origin: [2]int{originx, originy}}
 			row = append(row, p)
 		}
@@ -68,6 +68,8 @@ func main() {
 	// For each piece
 	for u, m := range pieces {
 		for v, n := range m {
+
+			// Array to hold the sum of the rbg values of each pixel within the piece
 			var sum [3]uint32
 
 			// newImage.Set(n.origin[0], n.origin[1], yellow)
@@ -77,9 +79,6 @@ func main() {
 				for j := n.origin[1]; j < n.origin[1]+pieceHeight; j++ {
 					r, g, b, a := croppedImage.At(i, j).RGBA()
 					_ = a
-					// if (r + g + b) != 0 {
-					// 	fmt.Println(r>>8, g>>8, b>>8)
-					// }
 					sum[0] += r
 					sum[1] += g
 					sum[2] += b
@@ -89,16 +88,20 @@ func main() {
 					// }
 				}
 			}
+
+			// fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", sum[0], sum[1], sum[2], sum[0]/(pieceWidth*pieceHeight), sum[1]/(pieceWidth*pieceHeight), sum[2]/(pieceWidth*pieceHeight), uint8(sum[0]/(pieceWidth*pieceHeight)), uint8(sum[1]/(pieceWidth*pieceHeight)), uint8(sum[2]/(pieceWidth*pieceHeight)))
+
 			// *** Average over the piece
 			sum[0] = sum[0] / (pieceWidth * pieceHeight)
 			sum[1] = sum[1] / (pieceWidth * pieceHeight)
 			sum[2] = sum[2] / (pieceWidth * pieceHeight)
+
 			pieces[u][v].averageColour = sum
 
 			// Set colours in output image  here for debugging
 			for i := n.origin[0]; i < n.origin[0]+pieceWidth; i++ {
 				for j := n.origin[1]; j < n.origin[1]+pieceHeight; j++ {
-					newImage.Set(i, j, color.RGBA{uint8(sum[0]), uint8(sum[1]), uint8(sum[2]), 0xff})
+					newImage.Set(i, j, color.RGBA{uint8(sum[0] >> 8), uint8(sum[1] >> 8), uint8(sum[2] >> 8), 0xff})
 				}
 			}
 		}
