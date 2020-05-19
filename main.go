@@ -12,8 +12,8 @@ import (
 
 // Define the dimentions of the pieces
 const (
-	pieceWidth  = 50
-	pieceHeight = 50
+	pieceWidth  = 5
+	pieceHeight = 5
 )
 
 type piece struct {
@@ -72,8 +72,6 @@ func main() {
 			// Array to hold the sum of the rbg values of each pixel within the piece
 			var sum [3]uint32
 
-			// newImage.Set(n.origin[0], n.origin[1], yellow)
-
 			// For each pixel within that piece
 			for i := n.origin[0]; i < n.origin[0]+pieceWidth; i++ {
 				for j := n.origin[1]; j < n.origin[1]+pieceHeight; j++ {
@@ -82,36 +80,24 @@ func main() {
 					sum[0] += r
 					sum[1] += g
 					sum[2] += b
-					// newImage.Set(i, j, croppedImage.At(i, j))
-					// if i == n.origin[0] || j == n.origin[1] {
-					// 	newImage.Set(i, j, yellow)
-					// }
 				}
 			}
 
-			// fmt.Printf("%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\t%v\n", sum[0], sum[1], sum[2], sum[0]/(pieceWidth*pieceHeight), sum[1]/(pieceWidth*pieceHeight), sum[2]/(pieceWidth*pieceHeight), uint8(sum[0]/(pieceWidth*pieceHeight)), uint8(sum[1]/(pieceWidth*pieceHeight)), uint8(sum[2]/(pieceWidth*pieceHeight)))
-
 			// *** Average over the piece
-			sum[0] = sum[0] / (pieceWidth * pieceHeight)
-			sum[1] = sum[1] / (pieceWidth * pieceHeight)
-			sum[2] = sum[2] / (pieceWidth * pieceHeight)
+			sum[0] = (sum[0] / (pieceWidth * pieceHeight)) >> 8
+			sum[1] = (sum[1] / (pieceWidth * pieceHeight)) >> 8
+			sum[2] = (sum[2] / (pieceWidth * pieceHeight)) >> 8
 
 			pieces[u][v].averageColour = sum
 
 			// Set colours in output image  here for debugging
 			for i := n.origin[0]; i < n.origin[0]+pieceWidth; i++ {
 				for j := n.origin[1]; j < n.origin[1]+pieceHeight; j++ {
-					newImage.Set(i, j, color.RGBA{uint8(sum[0] >> 8), uint8(sum[1] >> 8), uint8(sum[2] >> 8), 0xff})
+					newImage.Set(i, j, color.RGBA{uint8(sum[0]), uint8(sum[1]), uint8(sum[2]), 0xff})
 				}
 			}
 		}
 	}
-
-	// for _, g := range pieces {
-	// 	for _, h := range g {
-	// 		fmt.Println(h.averageColour)
-	// 	}
-	// }
 
 	saveImage(newImage, "images/output.jpg")
 }
