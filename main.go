@@ -12,8 +12,8 @@ import (
 
 // Define the dimentions of the pieces
 const (
-	pieceWidth  = 5
-	pieceHeight = 5
+	pieceWidth  = 10
+	pieceHeight = 10
 )
 
 type piece struct {
@@ -23,7 +23,7 @@ type piece struct {
 
 func main() {
 	// Load the source image
-	src, _ := imaging.Open("images/cover4.jpg")
+	src, _ := imaging.Open("images/cover.jpg")
 
 	// Determine new dimentions to be a multiple of the respective piece dimentions
 	// Integer division helps here
