@@ -14,6 +14,13 @@ import (
 const (
 	pieceWidth  = 10
 	pieceHeight = 10
+
+	X = 0
+	Y = 1
+
+	R = 0
+	G = 1
+	B = 2
 )
 
 type piece struct {
@@ -73,27 +80,27 @@ func main() {
 			var sum [3]uint32
 
 			// For each pixel within that piece
-			for i := n.origin[0]; i < n.origin[0]+pieceWidth; i++ {
-				for j := n.origin[1]; j < n.origin[1]+pieceHeight; j++ {
+			for i := n.origin[X]; i < n.origin[X]+pieceWidth; i++ {
+				for j := n.origin[Y]; j < n.origin[Y]+pieceHeight; j++ {
 					r, g, b, a := croppedImage.At(i, j).RGBA()
 					_ = a
-					sum[0] += r
-					sum[1] += g
-					sum[2] += b
+					sum[R] += r
+					sum[G] += g
+					sum[B] += b
 				}
 			}
 
 			// *** Average over the piece
-			sum[0] = (sum[0] / (pieceWidth * pieceHeight)) >> 8
-			sum[1] = (sum[1] / (pieceWidth * pieceHeight)) >> 8
-			sum[2] = (sum[2] / (pieceWidth * pieceHeight)) >> 8
+			sum[R] = (sum[R] / (pieceWidth * pieceHeight)) >> 8
+			sum[G] = (sum[G] / (pieceWidth * pieceHeight)) >> 8
+			sum[B] = (sum[B] / (pieceWidth * pieceHeight)) >> 8
 
 			pieces[u][v].averageColour = sum
 
 			// Set colours in output image  here for debugging
-			for i := n.origin[0]; i < n.origin[0]+pieceWidth; i++ {
-				for j := n.origin[1]; j < n.origin[1]+pieceHeight; j++ {
-					newImage.Set(i, j, color.RGBA{uint8(sum[0]), uint8(sum[1]), uint8(sum[2]), 0xff})
+			for i := n.origin[X]; i < n.origin[X]+pieceWidth; i++ {
+				for j := n.origin[Y]; j < n.origin[Y]+pieceHeight; j++ {
+					newImage.Set(i, j, color.RGBA{uint8(sum[R]), uint8(sum[G]), uint8(sum[B]), 0xff})
 				}
 			}
 		}
