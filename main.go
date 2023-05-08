@@ -10,7 +10,7 @@ import (
 	"github.com/disintegration/imaging"
 )
 
-// Define the dimentions of the pieces
+// Define the dimensions of the pieces
 const (
 	pieceWidth  = 10
 	pieceHeight = 10
@@ -32,7 +32,7 @@ func main() {
 	// Load the source image
 	src, _ := imaging.Open("images/cover.jpg")
 
-	// Determine new dimentions to be a multiple of the respective piece dimentions
+	// Determine new dimensions to be a multiple of the respective piece dimensions
 	// Integer division helps here
 	newx := (src.Bounds().Max.X / pieceWidth) * pieceWidth
 	newy := (src.Bounds().Max.Y / pieceHeight) * pieceHeight
